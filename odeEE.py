@@ -9,18 +9,19 @@ import numpy as np
 
 
 def odeEE(fun, t, y0):
-    timevalues = np.array(t).reshape([1, -1])
+    """Explicit Euler ODE solver"""
+    timevalues = np.array(t).flatten()
     timedeltas = np.diff(timevalues)
     
     y0 = np.array(y0).reshape([-1, 1])
     y = np.zeros([y0.size, timevalues.size])
-    yi = y[:, 0, np.newaxis] = y0
+    yi = y0
     
-    # this may be cleaned up with a better arrangement of when the y-array as being filled with yi
-    iterator = np.nditer([timevalues[..., :-1], timedeltas], flags=['c_index'])
-    for ti, dt in iterator:
+    for ti, dt in (iterator:=np.nditer([timevalues[..., :-1], timedeltas], flags=['c_index'])):
         i = iterator.index
+        y[:, i, np.newaxis] = yi
         fi = fun(ti, yi)
         yi = yi + fi*dt
-        y[:, i+1, np.newaxis] = yi
+    
+    y[:, i+1, np.newaxis] = yi
     return timevalues, y
