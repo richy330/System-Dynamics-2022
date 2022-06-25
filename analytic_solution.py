@@ -23,7 +23,10 @@ def cAt(t, c0, k):
     k1, k2, k3, k4, k5 = k
     return cA0 * np.exp(-(k1 + k2 + k3) * t)
 
+
 # TODO: cT0 and cS0 are hardcoded to be 0. This may not always be true and should be changed
+# TODO: maybe split all the solutions in homogenous and particular solutions, which may also make some
+# solutions simpler 
 def cSt(t, c0, k):
     cA0, cS0, cT0, cR0 = c0
     k1, k2, k3, k4, k5 = k
@@ -37,22 +40,19 @@ def cTt(t, c0, k):
 
     
     
-def cRt(t, c0, k):
-    cA0, cS0, cT0, cR0 = c0
-    k1, k2, k3, k4, k5 = k
-    
-    return cRt_homo(t, c0, k) + cRt_part(t, c0, k)
+def cRt(t, c0, k):    
+    return _cRt_homo(t, c0, k) + _cRt_part(t, c0, k)
 
 
-def cRt_homo(t, c0, k):
+def _cRt_homo(t, c0, k):
     cA0, cS0, cT0, cR0 = c0
     
-    cR_homo = cR0 - cRt_part(0, c0, k)
+    cR_homo = cR0 - _cRt_part(0, c0, k)
     return cR_homo
 
     
 
-def cRt_part(t, c0, k):    
+def _cRt_part(t, c0, k):    
     cA0, cS0, cT0, cR0 = c0
     k1, k2, k3, k4, k5 = k
     

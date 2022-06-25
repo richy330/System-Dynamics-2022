@@ -7,7 +7,7 @@ Created on Sat May 28 16:20:40 2022
 
 import numpy as np
 N_ITER = 10
-TOL_ABS = 0.0001
+TOL_ABS = 0.01
 nan = float("nan")
 
 

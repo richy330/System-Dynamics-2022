@@ -4,8 +4,9 @@ Created on Thu May 26 16:32:39 2022
 
 @author: Richard 
 """
-# cA0 = 0.185, 0.2, 0.17, 0.19, 0.180 for group IDs 1 to 5
 
+# DONE: analytic solution should be evaluated and plotted finer, no matter what the
+# resolution of the numeric solutions is
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@ from analytic_solution import analytic_solution as asol
 
 
 TOTAL_TIME = 500
-N_TIME_STEPS = 50
+N_TIME_STEPS = 15
 
 k1 = 0.007
 k2 = 0.0108
@@ -34,24 +35,25 @@ cT0 = cS0 = cR0 = 0
 
 coeff_matrix = np.array(
     [
-        [-(k1+k2+k3), 0,   0, 0],
-        [k1,        -k4,   0, 0],
-        [k3,          0, -k5, 0],
-        [k2,         k4,  k5, 0]
+        [-(k1+k2+k3),    0,   0, 0],
+        [     k1,      -k4,   0, 0],
+        [     k3,        0, -k5, 0],
+        [     k2,       k4,  k5, 0]
     ]
 )
 
-t = np.linspace(0, TOTAL_TIME, N_TIME_STEPS)
+t_num = np.linspace(0, TOTAL_TIME, N_TIME_STEPS)
+t_anal = np.linspace(0, TOTAL_TIME, 1000)
 y0 = np.array([cA0, cS0, cT0, cR0])
 k = np.array([k1, k2, k3, k4, k5])
 
 
 methods = {
-    "Explicit Euler": odeEE(mfunc, t, y0), 
-    "General Implicit Euler": odeIE(mfunc, t, y0), 
-    #"Linear Implicit Euler": odeIELinear(coeff_matrix, t, y0), 
-    #"Runge Kutta": odeRK(mfunc, t, y0),
-    "Analytic Solution": asol(t, y0, k)
+    # "Explicit Euler": odeEE(mfunc, t_num, y0), 
+    # "General Implicit Euler": odeIE(mfunc, t_num, y0), 
+    #"Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
+    "Runge Kutta": odeRK(mfunc, t_num, y0),
+    "Analytic Solution": asol(t_anal, y0, k)
 }
 
 
