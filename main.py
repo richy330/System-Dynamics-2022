@@ -22,8 +22,9 @@ from analytic_solution import analytic_solution as asol
 
 
 TOTAL_TIME = 500
-N_TIME_STEPS = 15
+N_TIME_STEPS = 20
 
+#TODO: These parameters are appearing 2 times 
 k1 = 0.007
 k2 = 0.0108
 k3 = 0.0027
@@ -51,7 +52,7 @@ k = np.array([k1, k2, k3, k4, k5])
 methods = {
     # "Explicit Euler": odeEE(mfunc, t_num, y0), 
     # "General Implicit Euler": odeIE(mfunc, t_num, y0), 
-    #"Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
+    # "Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
     "Runge Kutta": odeRK(mfunc, t_num, y0),
     "Analytic Solution": asol(t_anal, y0, k)
 }
