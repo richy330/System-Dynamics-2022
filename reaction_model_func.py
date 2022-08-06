@@ -3,23 +3,21 @@
 Created on Thu May 26 18:16:04 2022
 
 @author: Richard
+@author: Carmen
 """
-import numpy as np
+from constants import coeff_matrix, INITIAL_cA, REINJECTION_COUNT
 
-k1 = 0.007
-k2 = 0.0108
-k3 = 0.0027
-k4 = 0.0099
-k5 = 0.0163
-
-coeff_matrix = np.array(
-    [ 
-        [-(k1+k2+k3), 0,   0, 0], #rA
-        [k1,        -k4,   0, 0], #rS
-        [k3,          0, -k5, 0], #rT
-        [k2,         k4,  k5, 0] #rR
-    ])
-
-def reaction_model_func(t, y):
-    fy = coeff_matrix @ y
-    return fy
+class ReactionModel:
+    reinjections_current_count = 0
+    
+    def reaction_model_func(self, t, y):
+        fy = coeff_matrix @ y
+        cA = y[0][0]
+        print(f"current cA: {cA}")
+        if cA <= (0.5*INITIAL_cA) and self.reinjections_current_count < REINJECTION_COUNT:
+            y[0][0] = INITIAL_cA # re-inject A to its initial c
+            self.reinjections_current_count += 1
+            print("reinjected!")
+            print(f"new cA: {y[0][0]}")
+        
+        return fy
