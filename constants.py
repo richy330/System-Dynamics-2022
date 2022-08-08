@@ -2,8 +2,9 @@ import numpy as np
 
 TOTAL_TIME = 500
 N_TIME_STEPS = 100
-REINJECTION_COUNT = 2 #+1 from the first time 
+N_REINJECTIONS = 2 #+1 from the first time 
 INITIAL_cA = 0.185
+REINJECTION_CONC_A = 0.5 * INITIAL_cA
 
 k1 = 0.007
 k2 = 0.0108
