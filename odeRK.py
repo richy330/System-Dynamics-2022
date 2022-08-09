@@ -7,9 +7,10 @@ Created on Sat May 28 14:40:45 2022
 
 
 import numpy as np
+from scipy.integrate._ivp.ivp import prepare_events
 
 
-def odeRK(fun, t, y0):
+def odeRK(fun, t, y0, events=None):
     """Runge Kutta ODE solver"""
     
     timevalues = np.array(t).flatten()

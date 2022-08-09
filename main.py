@@ -8,6 +8,9 @@ Created on Thu May 26 16:32:39 2022
 # DONE: analytic solution should be evaluated and plotted finer, no matter what the
 # resolution of the numeric solutions is
 
+# TODO: implement event functions like in https://github.com/scipy/scipy/blob/651a9b717deb68adde9416072c1e1d5aa14a58a1/scipy/integrate/_ivp/ivp.py
+# helper functions can be imported from there like shown in the ode solvers
+
 import numpy as np
 import matplotlib.pyplot as plt
 # plt.close("all")
@@ -34,15 +37,18 @@ y0 = np.array([cA0, cS0, cT0, cR0])
 k = np.array([k1, k2, k3, k4, k5])
 
 
-mfunc = ReactionModel().model_func_injection
-mfunc2 = ReactionModel().model_func_injection
-mfunc3 = ReactionModel().model_func_injection
+# TODO: These functions still can only be used once
+mfunc_inj1 = ReactionModel().model_func_injection
+mfunc_inj2 = ReactionModel().model_func_injection
+mfunc_inj3 = ReactionModel().model_func_injection
+
+mfunc_std1 = ReactionModel().model_func_standard
 
 methods = {
-    "Explicit Euler": odeEE(mfunc, t_num, y0), 
-    #"General Implicit Euler": odeIE(mfunc2, t_num, y0), 
+    "Explicit Euler": odeEE(mfunc_inj1, t_num, y0), 
+    #"General Implicit Euler": odeIE(mfunc_inj2, t_num, y0), 
     #"Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
-    #"Runge Kutta": odeRK(mfunc3, t_num, y0),
+    "Runge Kutta": odeRK(mfunc_inj3, t_num, y0),
     #"Analytic Solution": asol(t_anal, y0, k)
 }
 

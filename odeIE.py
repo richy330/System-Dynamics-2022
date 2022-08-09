@@ -6,12 +6,15 @@ Created on Sat May 28 16:20:40 2022
 """
 
 import numpy as np
+from scipy.integrate._ivp.ivp import prepare_events
+
+
 N_ITER = 10
 TOL_ABS = 0.01
 nan = float("nan")
 
 
-def odeIE(fun, t, y0):
+def odeIE(fun, t, y0, events=None):
     """Implicit Euler ODE solver"""
     timevalues = np.array(t).flatten()
     timedeltas = np.diff(timevalues)

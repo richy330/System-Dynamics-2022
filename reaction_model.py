@@ -8,6 +8,7 @@ Created on Thu May 26 18:16:04 2022
 from constants import coeff_matrix, INITIAL_cA, N_REINJECTIONS, REINJECTION_CONC_A
 
 class ReactionModel:
+    
     reinjection_counter = 0
     
     def model_func_injection(self, t, y):

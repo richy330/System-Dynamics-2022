@@ -4,7 +4,10 @@ Created on Sun May 29 17:26:38 2022
 
 @author: Richard
 """
+
+
 import numpy as np
+
 
 
 def analytic_solution(t, c0, k):
@@ -17,11 +20,11 @@ def analytic_solution(t, c0, k):
 
 
 
-
 def cAt(t, c0, k):
     cA0, cS0, cT0, cR0 = c0
     k1, k2, k3, k4, k5 = k
     return cA0 * np.exp(-(k1 + k2 + k3) * t)
+
 
 
 # TODO: cT0 and cS0 are hardcoded to be 0. This may not always be true and should be changed
@@ -32,6 +35,7 @@ def cSt(t, c0, k):
     k1, k2, k3, k4, k5 = k
     return cA0 * k1/(k4-k1-k2-k3) * (np.exp(-(k1 + k2 + k3) * t) - np.exp(-k4 * t))
     
+
     
 def cTt(t, c0, k): 
     cA0, cS0, cT0, cR0 = c0
@@ -42,6 +46,7 @@ def cTt(t, c0, k):
     
 def cRt(t, c0, k):    
     return _cRt_homo(t, c0, k) + _cRt_part(t, c0, k)
+
 
 
 def _cRt_homo(t, c0, k):
