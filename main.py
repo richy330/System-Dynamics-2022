@@ -13,7 +13,7 @@ Created on Thu May 26 16:32:39 2022
 
 import numpy as np
 import matplotlib.pyplot as plt
-# plt.close("all")
+plt.close("all")
 
 from itertools import count
 
@@ -48,9 +48,9 @@ mfunc_std1 = RM().model_func_standard
 
 methods = {
     "Explicit Euler": odeEE(mfunc_std1, t_num, y0, events=[injection_termination]), 
-    #"General Implicit Euler": odeIE(mfunc_inj2, t_num, y0), 
+    "General Implicit Euler": odeIE(mfunc_std1, t_num, y0, events=[injection_termination]), 
     #"Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
-    #"Runge Kutta": odeRK(mfunc_inj3, t_num, y0),
+    "Runge Kutta": odeRK(mfunc_std1, t_num, y0, events=[injection_termination]), 
     #"Analytic Solution": asol(t_anal, y0, k)
 }
 

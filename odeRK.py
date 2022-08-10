@@ -7,7 +7,10 @@ Created on Sat May 28 14:40:45 2022
 
 
 import numpy as np
-from scipy.integrate._ivp.ivp import prepare_events
+
+from constants import nan
+from helper_functions import prepare_events, evaluate_events
+
 
 
 def odeRK(fun, t, y0, events=None):
@@ -16,9 +19,10 @@ def odeRK(fun, t, y0, events=None):
     timevalues = np.array(t).flatten()
     timedeltas = np.diff(timevalues)
     
+    events = prepare_events(events)
     
     y0 = np.array(y0).reshape([-1, 1])
-    y = np.zeros([y0.size, timevalues.size])
+    y = np.full(shape=[y0.size, timevalues.size], fill_value=nan)
     yi = y0
     
 
@@ -26,12 +30,17 @@ def odeRK(fun, t, y0, events=None):
         i = iterator.index
         y[:, i, np.newaxis] = yi
         
+        if (termination:=evaluate_events(ti, yi, events)):
+            break     
+        
         k1 = fun(t, yi)
         k2 = fun(t + dt/2, yi + dt*k1/2)
         k3 = fun(t + dt/2, yi + dt*k2/2)
         k4 = fun(t + dt, yi + dt*k3)
     
         yi = yi + dt * 1/6 * (k1 + 2*k2 + 2*k3 + k4)
-    
-    y[:, i+1, np.newaxis] = yi
+       
+    # if a break occured, we would include the last value BEFORE the break 2 times
+    else:
+        y[:, i+1, np.newaxis] = yi
     return timevalues, y

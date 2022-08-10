@@ -6,12 +6,12 @@ Created on Fri May 27 17:02:51 2022
 """
 
 import numpy as np
-from scipy.integrate._ivp.ivp import prepare_events
 
 
 
 
-def odeIELinear(coeff_matrix, t, y0, events=None):
+
+def odeIELinear(coeff_matrix, t, y0):
     """Implicit Euler solver for linear systems of ODEs. 
     Expects a coefficient matrix instead of a modelfunction, contrary to other ODE solvers.
     """

@@ -5,12 +5,14 @@ Created on Thu May 26 17:52:09 2022
 @author: Richard
 """
 
+__all__ = ["odeEE"]
+
+
 import numpy as np
 
-from helper_functions import prepare_events, evaluate_events
 from constants import nan
+from helper_functions import prepare_events, evaluate_events
 
-__all__ = ["odeEE"]
 
 def odeEE(fun, t, y0, events=None):
     """Explicit Euler ODE solver"""
@@ -33,8 +35,9 @@ def odeEE(fun, t, y0, events=None):
         fi = fun(ti, yi)
         yi = yi + fi*dt
         
-    
-    y[:, i+1, np.newaxis] = yi
+    # if a break occured, we would include the last value BEFORE the break 2 times
+    else:
+        y[:, i+1, np.newaxis] = yi
     return timevalues, y
 
 

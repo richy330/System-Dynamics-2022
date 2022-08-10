@@ -5,13 +5,17 @@ Created on Sat May 28 16:20:40 2022
 @author: Richard
 """
 
+__all__ = ["odeIE"]
+
+
 import numpy as np
-from scipy.integrate._ivp.ivp import prepare_events
+
+from constants import nan
+from helper_functions import prepare_events, evaluate_events
 
 
 N_ITER = 10
 TOL_ABS = 0.01
-nan = float("nan")
 
 
 def odeIE(fun, t, y0, events=None):
@@ -19,16 +23,24 @@ def odeIE(fun, t, y0, events=None):
     timevalues = np.array(t).flatten()
     timedeltas = np.diff(timevalues)
     
+    events = prepare_events(events)
+    
     y0 = np.array(y0).reshape([-1, 1])
-    y = np.zeros([y0.size, timevalues.size])
+    y = np.full(shape=[y0.size, timevalues.size], fill_value=nan)
     yi = y0
     
     for ti, dt in (iterator:=np.nditer([timevalues[..., :-1], timedeltas], flags=['c_index'])):
         i = iterator.index
         y[:, i, np.newaxis] = yi
+        
+        if (termination:=evaluate_events(ti, yi, events)):
+            break     
+        
         yi = y_next_fixed_point_iteration(fun, yi, ti, dt)
     
-    y[:, i+1, np.newaxis] = yi
+    # if a break occured, we would include the last value BEFORE the break 2 times
+    else:
+        y[:, i+1, np.newaxis] = yi
     return timevalues, y
 
 
