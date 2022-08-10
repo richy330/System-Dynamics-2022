@@ -27,11 +27,14 @@ def odeRK(fun, t, y0, events=None):
         y[:, i, np.newaxis] = yi
         
         k1 = fun(t, yi)
-        k2 = fun(t + dt/2, yi + dt*k1/2)
-        k3 = fun(t + dt/2, yi + dt*k2/2)
-        k4 = fun(t + dt, yi + dt*k3)
+        y_new = yi + dt*k1/2
+        k2 = fun(t + dt/2, y_new)
+        y_new = y_new + dt*k2/2
+        k3 = fun(t + dt/2, y_new)
+        y_new = y_new + dt*k3
+        k4 = fun(t + dt, y_new)
     
-        yi = yi + dt * 1/6 * (k1 + 2*k2 + 2*k3 + k4)
+        yi = y_new + dt * 1/6 * (k1 + 2*k2 + 2*k3 + k4)
     
     y[:, i+1, np.newaxis] = yi
     return timevalues, y

@@ -46,7 +46,7 @@ mfunc_std1 = ReactionModel().model_func_standard
 
 methods = {
     "Explicit Euler": odeEE(mfunc_inj1, t_num, y0), 
-    #"General Implicit Euler": odeIE(mfunc_inj2, t_num, y0), 
+    "General Implicit Euler": odeIE(mfunc_inj2, t_num, y0), 
     #"Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
     "Runge Kutta": odeRK(mfunc_inj3, t_num, y0),
     #"Analytic Solution": asol(t_anal, y0, k)

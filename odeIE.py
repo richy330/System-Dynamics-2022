@@ -38,7 +38,7 @@ def y_next_fixed_point_iteration(fun, yi, ti, dt):
     yi_next_old = nan
     for _ in range(N_ITER):
         fi = fun(ti, y_next_new)
-        y_next_new = yi + fi * dt
+        y_next_new = y_next_new + fi * dt
         
         
         iterative_change = y_next_new - yi_next_old
