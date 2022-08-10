@@ -1,5 +1,7 @@
 import numpy as np
 
+nan = float('nan')
+
 TOTAL_TIME = 500
 N_TIME_STEPS = 100
 N_REINJECTIONS = 2 #+1 from the first time 

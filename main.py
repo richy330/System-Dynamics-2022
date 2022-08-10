@@ -22,7 +22,7 @@ from odeIE import odeIE
 from odeRK import odeRK
 from odeIELinear import odeIELinear
 
-from reaction_model import ReactionModel
+from reactionModel import ReactionModel as RM, injection_termination
 from analytic_solution import analytic_solution as asol
 from constants import TOTAL_TIME, N_TIME_STEPS, cA0, cS0, cT0, cR0, k1, k2, k3, k4, k5, coeff_matrix
 
@@ -38,17 +38,19 @@ k = np.array([k1, k2, k3, k4, k5])
 
 
 # TODO: These functions still can only be used once
-mfunc_inj1 = ReactionModel().model_func_injection
-mfunc_inj2 = ReactionModel().model_func_injection
-mfunc_inj3 = ReactionModel().model_func_injection
+mfunc_inj1 = RM().model_func_injection
+mfunc_inj2 = RM().model_func_injection
+mfunc_inj3 = RM().model_func_injection
 
-mfunc_std1 = ReactionModel().model_func_standard
+mfunc_std1 = RM().model_func_standard
+
+
 
 methods = {
-    "Explicit Euler": odeEE(mfunc_inj1, t_num, y0), 
+    "Explicit Euler": odeEE(mfunc_std1, t_num, y0, events=[injection_termination]), 
     #"General Implicit Euler": odeIE(mfunc_inj2, t_num, y0), 
     #"Linear Implicit Euler": odeIELinear(coeff_matrix, t_num, y0), 
-    "Runge Kutta": odeRK(mfunc_inj3, t_num, y0),
+    #"Runge Kutta": odeRK(mfunc_inj3, t_num, y0),
     #"Analytic Solution": asol(t_anal, y0, k)
 }
 
