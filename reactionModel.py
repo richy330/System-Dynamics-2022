@@ -8,6 +8,7 @@ Created on Thu May 26 18:16:04 2022
 
 __all__ = ["ReactionModel", "injection_termination"]
 
+import numpy as np
 
 from constants import coeff_matrix, INITIAL_cA, N_REINJECTIONS, REINJECTION_CONC_A
 
@@ -30,7 +31,7 @@ class ReactionModel:
     #     return fy
     #%%
     
-    def model_func_standard(self, t, y):
+    def model_func(self, t, y):
         return coeff_matrix @ y    
 
 
@@ -53,4 +54,42 @@ class InjectionTermination():
         """
         return y[0] > REINJECTION_CONC_A
     
-injection_termination = InjectionTermination()
+    
+    
+class InjectionStateModifier():
+    """ 
+    Class serving as event-calable utilized by ODE-solvers. Has 'state_modifier'-attribrute set to 'True'
+    and returns the difference between c_i(A) and c_reinject(A), forcing a change in the state-vector
+    ('reinjection of component A')
+    by the solver if c_i(A) is coming close to the reinjection concentration.
+    """
+
+    
+    def __init__(self):
+        self.state_modifier = True
+        self.injection_count = 0
+        
+        
+    def __call__(self, t, y):
+        """
+        Event function utilized by ODE-Solvers. Return the difference between c_i(A) and c_reinject(A).
+        """
+        return y[0] > REINJECTION_CONC_A
+    
+    
+    def modify_state(self, t, y):
+        """
+        Event function utilized by ODE-Solvers after the event was triggered.
+        Adjusts the state vector to reset c(A) to c0(A) if the maximum number of reinjections
+        was not yet met.
+        """
+        
+        print(f'Reinjection count before update: {self.injection_count}')
+        if self.injection_count < N_REINJECTIONS:
+            y = np.array(y).copy()
+            y[0] = INITIAL_cA
+            self.injection_count += 1
+            print(f'Reinjection count: {self.injection_count}')
+        return y
+    
+

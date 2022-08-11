@@ -3,7 +3,7 @@ import numpy as np
 nan = float('nan')
 
 TOTAL_TIME = 500
-N_TIME_STEPS = 100
+N_TIME_STEPS = 50
 N_REINJECTIONS = 2 #+1 from the first time 
 INITIAL_cA = 0.185
 REINJECTION_CONC_A = 0.5 * INITIAL_cA

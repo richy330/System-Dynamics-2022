@@ -11,7 +11,7 @@ __all__ = ["odeIE"]
 import numpy as np
 
 from constants import nan
-from helper_functions import prepare_events, evaluate_events
+from solver_helper_functions import handle_events
 
 
 N_ITER = 10
@@ -23,8 +23,6 @@ def odeIE(fun, t, y0, events=None):
     timevalues = np.array(t).flatten()
     timedeltas = np.diff(timevalues)
     
-    events = prepare_events(events)
-    
     y0 = np.array(y0).reshape([-1, 1])
     y = np.full(shape=[y0.size, timevalues.size], fill_value=nan)
     yi = y0
@@ -33,10 +31,11 @@ def odeIE(fun, t, y0, events=None):
         i = iterator.index
         y[:, i, np.newaxis] = yi
         
-        if (termination:=evaluate_events(ti, yi, events)):
-            break     
+        termination, yi = handle_events(ti, yi, events)
+        if termination:
+            break       
         
-        yi = y_next_fixed_point_iteration(fun, yi, ti, dt)
+        yi = y_next_fixed_point_iteration(fun, yi, ti, dt) 
     
     # if a break occured, we would include the last value BEFORE the break 2 times
     else:
