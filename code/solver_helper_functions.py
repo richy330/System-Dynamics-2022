@@ -5,8 +5,6 @@ Created on Wed Aug 10 15:33:20 2022
 @author: Richard
 """
 
-from copy import copy
-
 import numpy as np
 
 

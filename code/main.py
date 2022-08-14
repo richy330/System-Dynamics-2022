@@ -8,11 +8,11 @@ Created on Thu May 26 16:32:39 2022
 # DONE: analytic solution should be evaluated and plotted finer, no matter what the
 # resolution of the numeric solutions is
 
-# DONE: implement event functions like simillar to:
+# DONE: implement event functions similar to:
 # https://github.com/scipy/scipy/blob/651a9b717deb68adde9416072c1e1d5aa14a58a1/scipy/integrate/_ivp/ivp.py
 
 
-# TODO: Fix analytical solution for cR with cR0 other than 0!
+# DONE: Fix analytical solution for cR with cR0 other than 0!
 
 import numpy as np
 
@@ -24,7 +24,7 @@ from odeIELinear import odeIELinear
 from analytic_solution import analytic_solution as asol, analytic_solution_reinjection as asol_reinj
 from plot_method_results import plot_method_results as plot_results
 from reactionModel import ReactionModel as RM, InjectionStateModifier as InjectionEvent
-from constants import T_START, T_END, N_TIME_STEPS, cA0, cS0, cT0, cR0, cA_REINJECT_START, cA_REINJECT_END, k1, k2, k3, k4, k5, coeff_matrix
+from constants import T_START, T_END, N_TIME_STEPS, cA0, cS0, cT0, cR0, cA_REINJECT_START, cA_REINJECT_END, N_REINJECTIONS, k1, k2, k3, k4, k5, coeff_matrix
 
 
 T_START = 0
@@ -38,7 +38,7 @@ k = np.array([k1, k2, k3, k4, k5])
 
 mfunc = RM().model_func
 
-
+#%% numerical and analytical solutions
 methods = {
     "Explicit Euler": odeEE(
         mfunc,
@@ -69,7 +69,7 @@ methods = {
         k,
         cA_REINJECT_START,
         cA_REINJECT_END,
-        n_reinject=2
+        n_reinject=N_REINJECTIONS
     ),
     # "Analytic Solution": asol(
     #     t_anal, 

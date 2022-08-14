@@ -8,8 +8,8 @@ Created on Sun May 29 17:26:38 2022
 import matplotlib.pyplot as plt
 import numpy as np
     
-# TODO: fix analytic solution for cR
-# TODO: analytic solution now works with initial concentrations, but initial time has to be 0 still
+
+
 def analytic_solution(t, c0, k):
     t = np.array(t).flatten()
     c0 = np.array(c0).flatten()
@@ -19,8 +19,6 @@ def analytic_solution(t, c0, k):
     return t, np.array([cAt(*args), cSt(*args), cTt(*args), cRt(*args)])
 
 
-#TODO: finish this function (can be simplified). 
-# This function would be simpler if the analytic solution worked with all starting times
 def analytic_solution_reinjection(t, c0, k, cA_reinject_start, cA_reinject_end, n_reinject):
     
 

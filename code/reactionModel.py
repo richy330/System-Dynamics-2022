@@ -8,70 +8,27 @@ Created on Thu May 26 18:16:04 2022
 
 __all__ = ["ReactionModel", "InjectionTermination", "InjectionStateModifier"]
 
+
+from abc import ABC
 import numpy as np
 
-from constants import cA0, cA_REINJECT_START, cA_REINJECT_END, coeff_matrix, N_REINJECTIONS
+from constants import cA_REINJECT_START, cA_REINJECT_END, N_REINJECTIONS, coeff_matrix
 
 
 class ReactionModel:
-    
-    #%% Deprecated since not working
-    # reinjection_counter = 0
-    
-    # def model_func_injection(self, t, y):
-    #     fy = coeff_matrix @ y
-    #     cA = y[0][0]
-    #     print(f"current cA: {cA}")
-    #     if cA <= REINJECTION_CONC_A and self.reinjection_counter < N_REINJECTIONS:
-    #         y[0][0] = INITIAL_cA # re-inject A to its initial c
-    #         self.reinjection_counter += 1
-    #         print("reinjected!")
-    #         print(f"new cA: {y[0][0]}")
-        
-    #     return fy
-    #%%
     
     def model_func(self, t, y):
         return coeff_matrix @ y    
 
 
-    
-class InjectionTermination():
-    """ 
-    Class serving as event-calable utilized by ODE-solvers. Has 'terminal'-attribrute set to 'True'
-    and returns the difference between c_i(A) and c_reinject(A), forcing a termination of integration
-    by the solver if c_i(A) is coming close to the reinjection concentration.
+class Event(ABC):
     """
-
-    
-    def __init__(self):
-        self.terminal = True
-        
-        
-        
-    def __call__(self, t, y):
-        """
-        Event function utilized by ODE-Solvers. Return the difference between c_i(A) and c_reinject(A).
-        """
-        return y[0] > cA_REINJECT_START
-    
-    
-    
-class InjectionStateModifier():
-    """ 
-    Class serving as event-calable utilized by ODE-solvers. Has 'state_modifier'-attribrute set to 'True'
-    and returns the difference between c_i(A) and c_reinject(A), forcing a change in the state-vector
-    ('reinjection of component A')
-    by the solver if c_i(A) is coming close to the reinjection concentration.
+    Base class for different Event-callables. Defines the __call__-function that returns 'False'
+    when c_i(A) falls under c_reinject(A), triggering the event. Actions taken upon events
+    are to be defined by the solvers, but can be implemented in the subclasses of 'Event' if the 
+    ODE solver supports them.
     """
-
     
-    def __init__(self):
-        self.state_modifier = True
-        self.injection_count = 0
-        
-        
-        
     def __call__(self, t, y):
         """
         Event function utilized by ODE-Solvers. Returns False if c_i(A) falls under c_reinject(A).
@@ -81,6 +38,34 @@ class InjectionStateModifier():
         """
         return y[0] > cA_REINJECT_START
     
+
+    
+    
+class InjectionTermination(Event):
+    """ 
+    Class serving as event-calable utilized by ODE-solvers. Has 'terminal'-attribrute set to 'True'
+    and returns a boolean indicating if c_i(A) > c_reinject(A), forcing a termination of integration
+    by the solver if c_i(A) is falling under the reinjection concentration.
+    """
+    
+    def __init__(self):
+        self.terminal = True
+
+    
+    
+    
+class InjectionStateModifier(Event):
+    """ 
+    Class serving as event-calable utilized by ODE-solvers. Has 'state_modifier'-attribrute set to 'True'
+    and returns a boolean indicating if c_i(A) > c_reinject(A), forcing a change in the state-vector
+    ('reinjection of component A')
+    by the solver if c_i(A) is falling under the reinjection concentration.
+    """
+
+    
+    def __init__(self):
+        self.state_modifier = True
+        self.injection_count = 0
     
     
     def modify_state(self, t, y):

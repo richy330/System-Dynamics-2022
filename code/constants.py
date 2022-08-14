@@ -19,7 +19,7 @@ cA_REINJECT_END = cA0
 T_START = 0
 T_END = 500
 N_TIME_STEPS = 100
-N_REINJECTIONS = 2
+N_REINJECTIONS = 3
 
 
 coeff_matrix = np.array(
