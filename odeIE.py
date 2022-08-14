@@ -35,7 +35,7 @@ def odeIE(fun, t, y0, events=None):
         if termination:
             break       
         
-        yi = y_next_fixed_point_iteration(fun, yi, ti, dt) 
+        yi = _y_next_fixed_point_iteration(fun, yi, ti, dt) 
     
     # if a break occured, we would include the last value BEFORE the break 2 times
     else:
@@ -43,7 +43,7 @@ def odeIE(fun, t, y0, events=None):
     return timevalues, y
 
 
-def y_next_fixed_point_iteration(fun, yi, ti, dt):
+def _y_next_fixed_point_iteration(fun, yi, ti, dt):
     fi = fun(ti, yi)
     y_next_new = yi + fi * dt
     yi_next_old = nan

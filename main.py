@@ -8,30 +8,29 @@ Created on Thu May 26 16:32:39 2022
 # DONE: analytic solution should be evaluated and plotted finer, no matter what the
 # resolution of the numeric solutions is
 
-# TODO: implement event functions like in https://github.com/scipy/scipy/blob/651a9b717deb68adde9416072c1e1d5aa14a58a1/scipy/integrate/_ivp/ivp.py
-# helper functions can be imported from there like shown in the ode solvers
+# DONE: implement event functions like simillar to:
+# https://github.com/scipy/scipy/blob/651a9b717deb68adde9416072c1e1d5aa14a58a1/scipy/integrate/_ivp/ivp.py
+
+
+# TODO: Fix analytical solution for cR with cR0 other than 0!
 
 import numpy as np
-import matplotlib.pyplot as plt
-plt.close("all")
-
-from itertools import count
 
 from odeEE import odeEE
 from odeIE import odeIE
 from odeRK import odeRK
 from odeIELinear import odeIELinear
 
-from reactionModel import ReactionModel as RM, InjectionTermination, InjectionStateModifier
-from analytic_solution import analytic_solution as asol
-from constants import TOTAL_TIME, N_TIME_STEPS, cA0, cS0, cT0, cR0, k1, k2, k3, k4, k5, coeff_matrix
+from analytic_solution import analytic_solution as asol, analytic_solution_reinjection as asol_reinj
+from plot_method_results import plot_method_results as plot_results
+from reactionModel import ReactionModel as RM, InjectionStateModifier as InjectionEvent
+from constants import T_START, T_END, N_TIME_STEPS, cA0, cS0, cT0, cR0, cA_REINJECT_START, cA_REINJECT_END, k1, k2, k3, k4, k5, coeff_matrix
 
 
-components = ["c(A)", "c(S)", "c(T)", "c(R)"]
+T_START = 0
 
-
-t_num = np.linspace(0, TOTAL_TIME, N_TIME_STEPS)
-t_anal = np.linspace(0, TOTAL_TIME, 1000)
+t_num = np.linspace(T_START, T_END, N_TIME_STEPS)
+t_anal = np.linspace(T_START, T_END, 1000)
 
 y0 = np.array([cA0, cS0, cT0, cR0])
 k = np.array([k1, k2, k3, k4, k5])
@@ -40,54 +39,45 @@ k = np.array([k1, k2, k3, k4, k5])
 mfunc = RM().model_func
 
 
-
 methods = {
     "Explicit Euler": odeEE(
         mfunc,
         t_num, 
         y0, 
-        events=InjectionStateModifier()
+        events=InjectionEvent()
     ), 
-    "General Implicit Euler": odeIE(
-        mfunc, 
-        t_num, 
-        y0, 
-        events=InjectionStateModifier()
-    ), 
+    # "General Implicit Euler": odeIE(
+    #     mfunc, 
+    #     t_num, 
+    #     y0, 
+    #     events=InjectionEvent()
+    # ), 
     # "Linear Implicit Euler": odeIELinear(
     #     coeff_matrix,
     #     t_num, 
     #     y0
     # ), 
-    "Runge Kutta": odeRK(
-        mfunc, 
-        t_num, 
-        y0, 
-        events=InjectionStateModifier()
-    ), 
-    "Analytic Solution": asol(
+    # "Runge Kutta": odeRK(
+    #     mfunc, 
+    #     t_num, 
+    #     y0, 
+    #     events=InjectionEvent()
+    # ), 
+    "Analytic Solution": asol_reinj(
         t_anal, 
         y0, 
-        k
-    )
+        k,
+        cA_REINJECT_START,
+        cA_REINJECT_END,
+        n_reinject=2
+    ),
+    # "Analytic Solution": asol(
+    #     t_anal, 
+    #     y0, 
+    #     k
+    # )
 }
 
+solution_labels = ["c(A)", "c(S)", "c(T)", "c(R)"]
+plot_results(methods, solution_labels)
 
-
-fig, axs = plt.subplots(4, 1, figsize=(10, 10))
-for method_name, solution in methods.items():
-    t, y = solution
-    for idx, ci, component_conc_specifier in zip(count(), y, components):
-
-        
-        ax = axs[idx]
-        ax.plot(t.flatten(), ci, label=f"{component_conc_specifier} {method_name}")
-        ax.set_ylabel(component_conc_specifier)
-        ax.set_xlabel("time [s]")
-        ax.grid(True)
-    print(f"{method_name} c(A): {y[0, -1]}, c(S): {y[1, -1]}, c(T): {y[2, -1]}, c(R): {y[3, -1]}")
-
-axs[-1].legend(loc='lower center', bbox_to_anchor=(0.5, -1), ncol=3, fancybox=True, shadow=True)
-fig.suptitle("Concentration vs time comparison over the system's reaction")
-fig.tight_layout()
-fig.savefig("results.png")

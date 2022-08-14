@@ -30,7 +30,7 @@ def odeRK(fun, t, y0, events=None):
         
         termination, yi = handle_events(ti, yi, events)
         if termination:
-            break  
+            break
         
         k1 = fun(t, yi)
         k2 = fun(t + dt/2, yi + dt*k1/2)

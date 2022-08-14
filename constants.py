@@ -2,11 +2,6 @@ import numpy as np
 
 nan = float('nan')
 
-TOTAL_TIME = 500
-N_TIME_STEPS = 50
-N_REINJECTIONS = 2 #+1 from the first time 
-INITIAL_cA = 0.185
-REINJECTION_CONC_A = 0.5 * INITIAL_cA
 
 k1 = 0.007
 k2 = 0.0108
@@ -15,7 +10,17 @@ k4 = 0.0099
 k5 = 0.0163
 
 cA0 = 0.185
-cT0 = cS0 = cR0 = 0
+cT0 = 0.0
+cS0 = 0.0
+cR0 = 0.0
+
+cA_REINJECT_START = 0.5 * cA0
+cA_REINJECT_END = cA0
+T_START = 0
+T_END = 500
+N_TIME_STEPS = 100
+N_REINJECTIONS = 2
+
 
 coeff_matrix = np.array(
     [
@@ -25,3 +30,5 @@ coeff_matrix = np.array(
         [     k2,       k4,  k5, 0]
     ]
 )
+
+

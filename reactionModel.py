@@ -6,11 +6,11 @@ Created on Thu May 26 18:16:04 2022
 @author: Carmen
 """
 
-__all__ = ["ReactionModel", "injection_termination"]
+__all__ = ["ReactionModel", "InjectionTermination", "InjectionStateModifier"]
 
 import numpy as np
 
-from constants import coeff_matrix, INITIAL_cA, N_REINJECTIONS, REINJECTION_CONC_A
+from constants import cA0, cA_REINJECT_START, cA_REINJECT_END, coeff_matrix, N_REINJECTIONS
 
 
 class ReactionModel:
@@ -48,11 +48,12 @@ class InjectionTermination():
         self.terminal = True
         
         
+        
     def __call__(self, t, y):
         """
         Event function utilized by ODE-Solvers. Return the difference between c_i(A) and c_reinject(A).
         """
-        return y[0] > REINJECTION_CONC_A
+        return y[0] > cA_REINJECT_START
     
     
     
@@ -70,11 +71,16 @@ class InjectionStateModifier():
         self.injection_count = 0
         
         
+        
     def __call__(self, t, y):
         """
-        Event function utilized by ODE-Solvers. Return the difference between c_i(A) and c_reinject(A).
+        Event function utilized by ODE-Solvers. Returns False if c_i(A) falls under c_reinject(A).
+        
+        Solvers recognize triggered events when calling the event returns a value close to 0, which
+        the boolean 'False' fulfills.
         """
-        return y[0] > REINJECTION_CONC_A
+        return y[0] > cA_REINJECT_START
+    
     
     
     def modify_state(self, t, y):
@@ -84,12 +90,10 @@ class InjectionStateModifier():
         was not yet met.
         """
         
-        print(f'Reinjection count before update: {self.injection_count}')
         if self.injection_count < N_REINJECTIONS:
             y = np.array(y).copy()
-            y[0] = INITIAL_cA
+            y[0] = cA_REINJECT_END
             self.injection_count += 1
-            print(f'Reinjection count: {self.injection_count}')
         return y
     
 
