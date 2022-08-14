@@ -57,12 +57,12 @@ methods = {
     #     t_num, 
     #     y0
     # ), 
-    # "Runge Kutta": odeRK(
-    #     mfunc, 
-    #     t_num, 
-    #     y0, 
-    #     events=InjectionEvent()
-    # ), 
+    "Runge Kutta": odeRK(
+        mfunc, 
+        t_num, 
+        y0, 
+        events=InjectionEvent()
+    ), 
     "Analytic Solution": asol_reinj(
         t_anal, 
         y0, 

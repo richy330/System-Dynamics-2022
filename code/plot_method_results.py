@@ -29,6 +29,6 @@ def plot_method_results(methods, solution_label):
         # print(f"{method_name} c(A): {y[0, -1]}, c(S): {y[1, -1]}, c(T): {y[2, -1]}, c(R): {y[3, -1]}")
 
     axs[-1].legend(loc='lower center', bbox_to_anchor=(0.5, -1), ncol=3, fancybox=True, shadow=True)
-    fig.suptitle("Concentration vs time comparison over the system's reaction")
+    fig.suptitle("Concentration vs time for each substance calculated by different solvers")
     fig.tight_layout()
     fig.savefig("results.png")
